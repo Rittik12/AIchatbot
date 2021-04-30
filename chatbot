@@ -1,0 +1,53 @@
+from chatterbot import ChatBot
+#function to create chatbot
+#we have the read_only to falsenso the chatbot leans from the user input as
+
+def create_bot(name):
+  mybot= ChatBot(name= name,read_only=False,
+                 logic_adapters=["chatterbot.logic.BestMatch"],
+                 storage_adapters= "chatterbot.storage.SQlStorageAdapter" )
+  return mybot
+#function to train the chatbot with a variety of data
+#the language we have chosen is english
+#we can train the bot for other languages as well according to requirement
+
+def train_all_data(mybot):
+  from chatterbot.trainers import ChatterBotCorpusTrainer
+  corpus_trainer= ChatterBotCorpusTrainer(mybot)
+  corpus_trainer.train("chatterbot.corpus.english")
+
+#function to train the chatbot with custom data
+#it uses Listtrainer to train data from lists
+
+def custom_train(mybot,conversation):
+  from chatterbot.trainers import ListTrainer
+  trainer= ListTrainer(mybot)
+  trainer.train(conversation)
+
+def start_chatbot(mybot):
+  print('\033c')
+  print("Hey, I am Robo, How are uh!!")
+  bye_list=["bye Robo,good bye"]
+
+  while(True):
+    user_input=input("me:")
+    if user_input.lower() in bye_list:
+      print("Robo:Bye and have a nice Day!")
+      break
+
+    response= mybot.get_response(user_input)
+    print("Robo:",response)
+    #create chatbot
+mybot= create_bot("Robo")
+#train All data
+train_all_data(mybot)
+
+#train chatbot with our custom data
+house_owner= [
+"who is the house owner?",
+"John"
+]
+custom_train(mybot, house_owner)
+
+#start chatbot
+start_chatbot(mybot)
